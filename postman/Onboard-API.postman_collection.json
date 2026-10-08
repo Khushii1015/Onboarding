@@ -1,0 +1,100 @@
+{
+  "info": {
+    "name": "Onboard API",
+    "description": "Run the requests top to bottom after starting the app with mvn spring-boot:run.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "employeeId", "value": "1" },
+    { "key": "taskId", "value": "2" }
+  ],
+  "item": [
+    {
+      "name": "1. Create employee (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ana Lopez\",\n  \"role\": \"Software Engineer\",\n  \"startDate\": \"2026-10-01\"\n}" },
+        "url": "{{baseUrl}}/api/employees"
+      }
+    },
+    {
+      "name": "2. List employees (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees" }
+    },
+    {
+      "name": "3. Get employee (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/{{employeeId}}" }
+    },
+    {
+      "name": "4a. Add task - overdue (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Set up laptop\",\n  \"dueDate\": \"2026-10-02\"\n}" },
+        "url": "{{baseUrl}}/api/employees/{{employeeId}}/tasks"
+      }
+    },
+    {
+      "name": "4b. Add task (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Meet onboarding buddy\",\n  \"dueDate\": \"2026-10-03\"\n}" },
+        "url": "{{baseUrl}}/api/employees/{{employeeId}}/tasks"
+      }
+    },
+    {
+      "name": "4c. Add task - future (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Sign policies\",\n  \"dueDate\": \"2026-10-20\"\n}" },
+        "url": "{{baseUrl}}/api/employees/{{employeeId}}/tasks"
+      }
+    },
+    {
+      "name": "5. List tasks (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/{{employeeId}}/tasks" }
+    },
+    {
+      "name": "6. Complete task (200)",
+      "request": { "method": "PATCH", "url": "{{baseUrl}}/api/tasks/{{taskId}}/complete" }
+    },
+    {
+      "name": "7. Progress (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/{{employeeId}}/progress" }
+    },
+    {
+      "name": "Error: validation (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"\",\n  \"role\": \"Engineer\"\n}" },
+        "url": "{{baseUrl}}/api/employees"
+      }
+    },
+    {
+      "name": "Error: bad date format (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ben\",\n  \"role\": \"Analyst\",\n  \"startDate\": \"10/14/2026\"\n}" },
+        "url": "{{baseUrl}}/api/employees"
+      }
+    },
+    {
+      "name": "Error: non-numeric id (400)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/abc" }
+    },
+    {
+      "name": "Error: unknown employee (404)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/999" }
+    },
+    {
+      "name": "Error: unknown task (404)",
+      "request": { "method": "PATCH", "url": "{{baseUrl}}/api/tasks/999/complete" }
+    }
+  ]
+}
